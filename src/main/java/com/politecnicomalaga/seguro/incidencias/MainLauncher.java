@@ -5,6 +5,8 @@
 package com.politecnicomalaga.seguro.incidencias;
 
 import com.google.gson.Gson;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.InputMismatchException;
@@ -64,6 +66,24 @@ public class MainLauncher {
                     case 8:
                         loadOficina(sc);
                         break;
+                    case 9:
+                        Gson gson = new Gson();
+
+                        try ( FileReader json = new FileReader("oficina.json")) {
+                            // Convertir JSON a objeto Java
+                            Oficina Oficina = gson.fromJson(json, Oficina.class);
+
+                        } catch (IOException e) {
+                            e.printStackTrace();
+
+                        }
+
+                        if (readJson("oficina.json")) {
+                            System.out.println("Oficina cargada desde JSON correctamente.");
+                        } else {
+                            System.out.println("Error al cargar la oficina desde JSON.");
+                        }
+                        break;
                     case -1: //Opción de entrada errónea 
                         System.out.println(ProjectStrings.OPCION_NO_VALIDA);
                         break;
@@ -87,6 +107,7 @@ public class MainLauncher {
         System.out.println("6. Listar cliente/s");
         System.out.println("7. Guardar oficina");
         System.out.println("8. Cargar oficina");
+        System.out.println("9. Cargar oficina desde JSON");
         System.out.println("Cualquier otra opción: Salir");
 
     }
@@ -586,5 +607,10 @@ public class MainLauncher {
         if (respuesta.equals("S")) {
             miOficina = new Oficina(ControladorFichero.readText("Oficina.csv"));
         }
+    }
+
+    public static boolean readJson(String json) {
+        new Gson().fromJson(json, Oficina.class);
+        return true;
     }
 }

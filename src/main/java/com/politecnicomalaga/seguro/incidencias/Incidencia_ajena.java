@@ -32,7 +32,7 @@ public class Incidencia_ajena extends Incidencia {
 
     @Override
     public String toString() {
-        return super.toString()+ "#" + dniAjeno;
+        return super.toString()+ "#          " + dniAjeno;
     }
 
     @Override

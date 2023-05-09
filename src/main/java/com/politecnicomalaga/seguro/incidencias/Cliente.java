@@ -11,7 +11,17 @@ import java.util.List;
  *
  * @author noelia
  */
-public class Cliente {
+public class Cliente implements Comparable<Cliente> {
+
+    @Override
+    public int compareTo(Cliente p) {
+        int resultado = 0;
+
+        //Como es ese paciente que me pasan con respcto al this?
+        resultado = (this.apellidos + "," + this.nombre).compareTo(p.getApellidos() + "," + p.getNombre());
+
+        return resultado;
+    }
 
     public enum AtributosCliente {
         DNI, CODPOLIZA, NOMBRE, APELLIDOS, DIRECCION, EMAIL, TELEFONO
@@ -61,11 +71,11 @@ public class Cliente {
 
         //Si las líneas son más de 1... Hay Incidencias
         for (int i = 1; i < lineas.length; i++) {
-            
+
             String[] columnasIncidencia = lineas[i].split(";");
-            
+
             if (columnasIncidencia[0].equals("Incidencia")) {
-                
+
                 if (columnasIncidencia.length > 8 && columnasIncidencia[8].length() >= 1 && columnasIncidencia[8].length() <= 2) {
                     Incidencia in = new Incidencia_urgente(lineas[i]);
                     misIncidencias.add(in);
@@ -79,7 +89,7 @@ public class Cliente {
             }
         }
     }
-    
+
     //número de póliza del cliente, un guión y un id autonumérico generado por la aplicación    
     public String generarCodIncidencia() {
         String cadena = codPoliza + "-" + numIncidencias;
@@ -306,4 +316,5 @@ public class Cliente {
         }
         return cadena;
     }
+
 }

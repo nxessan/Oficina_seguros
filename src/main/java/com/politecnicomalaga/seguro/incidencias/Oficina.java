@@ -1,6 +1,10 @@
 package com.politecnicomalaga.seguro.incidencias;
 
+import com.google.gson.Gson;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -14,6 +18,7 @@ public class Oficina {
     private String direccion;
     private String telefono;
     private String email;
+    private int orden;
 
     List<Cliente> misClientes = new ArrayList<Cliente>();
 
@@ -29,31 +34,31 @@ public class Oficina {
     }
 
     public Oficina(String sCSV) {
-		String[] lineas = sCSV.split("\n");
-		//Me vendrá una línea mínimo para clinica
-		String[] columnas = lineas[0].split(";");
-		if (columnas[0].equals("Oficina")) {
-			this.codOfi = columnas[1];
-			this.nombre = columnas[2];
-			this.direccion = columnas[3];
-                        this.telefono = columnas[4];
-                        this.email = columnas[5];
-		} else {
-			return;
-		}
-		
-		//Después de 0 a n tratamientos
-		this.misClientes = new ArrayList<>();
-		
-		String[] clientesPosibles = sCSV.split("Cliente");
-		String miClienteCSV;
-		
-		for (int i=1;i<clientesPosibles.length;i++) {
-			miClienteCSV = "Cliente" + clientesPosibles[i];
-			Cliente c = new Cliente(miClienteCSV);
-			misClientes.add(c);
-		}
-	}
+        String[] lineas = sCSV.split("\n");
+        //Me vendrá una línea mínimo para clinica
+        String[] columnas = lineas[0].split(";");
+        if (columnas[0].equals("Oficina")) {
+            this.codOfi = columnas[1];
+            this.nombre = columnas[2];
+            this.direccion = columnas[3];
+            this.telefono = columnas[4];
+            this.email = columnas[5];
+        } else {
+            return;
+        }
+
+        //Después de 0 a n tratamientos
+        this.misClientes = new ArrayList<>();
+
+        String[] clientesPosibles = sCSV.split("Cliente");
+        String miClienteCSV;
+
+        for (int i = 1; i < clientesPosibles.length; i++) {
+            miClienteCSV = "Cliente" + clientesPosibles[i];
+            Cliente c = new Cliente(miClienteCSV);
+            misClientes.add(c);
+        }
+    }
 
     public Cliente mostrarClientePorDNI(String dni) {
         int i = 0;
@@ -69,8 +74,18 @@ public class Oficina {
     }
 
     public boolean addCliente(Cliente cliente) {
-        if (cliente.getDni() == null || cliente.getCodPoliza() == null || cliente.getNombre() == null || cliente.getApellidos().isEmpty()) {
+        if (cliente.getDni() == null
+                || cliente.getCodPoliza() == null
+                || cliente.getNombre() == null
+                || cliente.getApellidos().isEmpty()) {
             return false;
+        }
+
+        for (Cliente c : misClientes) {
+            //Si el dni introducido ya pertenece a un cliente, da error y no se crea el cliente.
+            if (c.getDni().equals(c.getDni())) {
+                return false;
+            }
         }
         this.misClientes.add(cliente);
         return true;
@@ -80,15 +95,21 @@ public class Oficina {
     public boolean eliminaCliente(String dni) {
         boolean found = false;
         int i = 0;
+
+        Cliente c = this.mostrarClientePorDNI(dni);
+
         while (!found && i < misClientes.size()) {
             Cliente cliente = misClientes.get(i);
             if (cliente.getDni().equals(dni)) {
-                found = true;
-                misClientes.remove(cliente);
-                return true;
+                if (c.getListaIncidencias().isEmpty()) {
+                    found = true;
+                    misClientes.remove(cliente);
+                    return true;
+                }
             }
+            i++;
+
         }
-        i++;
         return false;
     }
 
@@ -149,16 +170,40 @@ public class Oficina {
     }
 
     //Listar todos los clientes
-    public Cliente[] todosClientes() {
+    /* public Cliente[] todosClientes() {
         Cliente[] arrayClientes = new Cliente[misClientes.size()];
         if (misClientes.size() == 0) {
             return null;
         }
         Cliente[] listaCli = new Cliente[misClientes.size()];
         return misClientes.toArray(listaCli);
+    }*/
+    public Cliente[] todosClientes() {
+
+        if (misClientes.size() == 0) {
+            return null;
+        }
+
+        switch (orden) {
+
+            case 0:
+                Collections.sort(misClientes);
+                break;
+            case 1:
+                Collections.sort(misClientes, new ClienteComparadorDni());
+                break;
+            case 2:
+                Collections.sort(misClientes, new ClienteComparadorApellNom());
+                break;
+
+        }
+
+        Collections.sort(misClientes);//ordenar pacientes
+        Cliente[] listaP = new Cliente[misClientes.size()];
+        return misClientes.toArray(listaP);
     }
 
-    public boolean actualizaPaciente(String dni, String campo, Cliente.AtributosCliente atrActualizar) {
+    public boolean actualizaCliente(String dni, String campo, Cliente.AtributosCliente atrActualizar) {
         Cliente p = this.buscaUnCliente(dni);
         if (p != null) {
             p.setValor(campo, atrActualizar);
