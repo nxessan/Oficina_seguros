@@ -32,12 +32,11 @@ public class Incidencia_ajena extends Incidencia {
 
     @Override
     public String toString() {
-        return String.format("Incidencia;%s;%s;%s;%s;%s;%b;%s;%s\n", fechaSuceso, hora, matPropia, matAjena, descripcion, abierta, codIncidencia, dniAjeno);
+        return super.toString()+ "#" + dniAjeno;
     }
 
     @Override
     public String toCSV() {
-        return String.format("Incidencia;%s;%s;%s;%s;%s;%b;%s;%s\n", fechaSuceso, hora, matPropia, matAjena, descripcion, abierta, codIncidencia, dniAjeno);
-        
-    }
+		return String.format("Incidencia;%s;%s;%s;%s;%s;%s;%b;%s\n", fechaSuceso, hora, matPropia, matAjena, descripcion, codIncidencia,abierta, dniAjeno);
+	}   
 }

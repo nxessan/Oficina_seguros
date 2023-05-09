@@ -4,7 +4,7 @@ package com.politecnicomalaga.seguro.incidencias;
  *
  * @author noelia
  */
-public class Incidencia {
+public class Incidencia implements Comparable<Incidencia>{
 
     public enum AtributosIncidencias {
         FECHASUCESO, HORA, MATPROPIA, MATAJENA, DESCRIPCION, ABIERTA, CODINCIDENCIA
@@ -29,26 +29,26 @@ public class Incidencia {
     }
 
     public Incidencia(String sCSV) {
-        String[] columnas = sCSV.split(";");
-
-        if (columnas[0].equals("Tratamiento")) {
-            this.fechaSuceso = columnas[1];
-            this.hora = columnas[2];
-            this.matPropia = columnas[3];
-            this.matAjena = columnas[4];
-            this.descripcion = columnas[5];
-            this.descripcion = columnas[6];
-            this.abierta = Boolean.parseBoolean(columnas[7]);
-
-        } else {
-            this.fechaSuceso = "";
-            this.hora = "";
-            this.matPropia = "";
-            this.matAjena = "";
-            this.descripcion = "";
-            this.abierta = false;
-        }
-    }
+		String[] columnas = sCSV.split(";");
+		
+		if (columnas[0].equals("Incidencia")) {
+			this.fechaSuceso = columnas[1];
+			this.hora = columnas[2];
+			this.matPropia = columnas[3];
+			this.matAjena = (columnas[4]);
+			this.descripcion = (columnas[5]);
+                        this.codIncidencia = columnas[6];
+                        this.abierta = Boolean.parseBoolean(columnas[7]);
+		} else {
+			this.fechaSuceso = "";
+			this.hora = "0";
+			this.matPropia = "";
+                        this.matAjena = "";
+                        this.descripcion = "";
+                        this.codIncidencia = "";
+			this.abierta = true;
+		}
+	}
 
     public boolean compara(String campo, AtributosIncidencias at) {
         char comparador;
@@ -133,5 +133,13 @@ public class Incidencia {
 
     public String toCSV() {
         return String.format("Incidencia;%s;%s;%s;%s;%s;%b;%s\n", fechaSuceso, hora, matPropia, matAjena, descripcion, abierta, codIncidencia);
+    }
+    
+    @Override
+    public int compareTo(Incidencia i) {
+        int resultado =0;
+        //¿Como es esa incidencia que me pasan con respecto a la que tengo en esta clase (this))
+        resultado = (this.fechaSuceso).compareTo(i.getFechaSuceso());
+        return resultado;
     }
 }

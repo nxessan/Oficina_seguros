@@ -6,9 +6,9 @@ package com.politecnicomalaga.seguro.incidencias;
  */
 public class Incidencia_urgente extends Incidencia {
 
-    private String diasMax;
+    protected String diasMax;
 
-    public Incidencia_urgente(String fechaSuceso, String hora, String matPropia, String matAjena, String descripcion, String diasMax, String codIncidencia) {
+    public Incidencia_urgente(String fechaSuceso, String hora, String matPropia, String matAjena, String descripcion, String codIncidencia, String diasMax) {
         super(fechaSuceso, hora, matPropia, matAjena, descripcion, codIncidencia);
         this.diasMax = diasMax;
     }
@@ -24,12 +24,11 @@ public class Incidencia_urgente extends Incidencia {
 
     @Override
     public String toString() {
-        return super.toString()+ "Días Máximos: " + diasMax;
+        return super.toString()+ "#          " + diasMax;
     }
 
     @Override
     public String toCSV() {
-        String cadena = String.format("Incidencia;%s;%s;%s;%s;%s;%b;%s;%s\n", fechaSuceso, hora, matPropia, matAjena, descripcion, abierta, codIncidencia, diasMax);
-        return cadena;
-    }
+		return String.format("Incidencia;%s;%s;%s;%s;%s;%s;%b;%s\n", fechaSuceso, hora, matPropia, matAjena, descripcion, codIncidencia,abierta, diasMax);
+	}   
 }

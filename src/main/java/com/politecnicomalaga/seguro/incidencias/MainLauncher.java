@@ -5,6 +5,8 @@
 package com.politecnicomalaga.seguro.incidencias;
 
 import com.google.gson.Gson;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -331,12 +333,12 @@ public class MainLauncher {
 
     private static void mostrarListaClientes(Cliente[] lista) {
         if (lista != null) {
-            System.out.println("Lista de pacientes:");
+            System.out.println("Lista de clientes:");
             for (Cliente p : lista) {
                 System.out.println(p.toString());
             }
         } else {
-            System.out.println("0 pacientes");
+            System.out.println("0 clientes");
         }
     }
 
@@ -360,7 +362,7 @@ public class MainLauncher {
             System.out.println("3. Abrir incidencia urgente");
             System.out.println("4. Cerrar incidencia");
             System.out.println("5. Buscar incidencia");
-            System.out.println("6. Listar todas las incidencias");
+            System.out.println("6. Listar incidencias");
             System.out.println("Cualquier otra opción: volver al menú principal");
             opcion = leerIntTeclado(sc);
             switch (opcion) {
@@ -423,7 +425,7 @@ public class MainLauncher {
         System.out.println("-------------------------------------------------\n");
         System.out.println("NUEVA INCIDENCIA AJENA\n");
         //Recoger datos incidencia
-        String fechaSuceso, hora, matPropia, matAjena, descripcion, dniAjeno, codIncidencia;
+        String fechaSuceso, hora, matPropia, matAjena, descripcion, dniAjeno;
 
         System.out.println("Fecha del suceso");
         fechaSuceso = leerStringTeclado(sc);
@@ -439,7 +441,7 @@ public class MainLauncher {
         dniAjeno = leerStringTeclado(sc);
 
         //Crear incidencia ajena
-        if (p.nuevaIncidenciaAjena(fechaSuceso, hora, matPropia, matAjena, descripcion, descripcion)) {
+        if (p.nuevaIncidenciaAjena(fechaSuceso, hora, matPropia, matAjena, descripcion, dniAjeno)) {
             System.out.println(ProjectStrings.ALTA_INCIDENCIA_OK);
         } else {
             System.out.println(ProjectStrings.ALTA_INCIDENCIA_ERROR);
@@ -452,7 +454,7 @@ public class MainLauncher {
         System.out.println("-------------------------------------------------\n");
         System.out.println("NUEVA INCIDENCIA URGENTE\n");
         //Recoger datos incidencia
-        String fechaSuceso, hora, matPropia, matAjena, descripcion, maxDias, codIncidencia;
+        String fechaSuceso, hora, matPropia, matAjena, descripcion, maxDias;
 
         System.out.println("Fecha del suceso");
         fechaSuceso = leerStringTeclado(sc);
@@ -468,7 +470,7 @@ public class MainLauncher {
         maxDias = leerStringTeclado(sc);
 
         //Crear incidencia
-        if (p.nuevaIncidenciaUrgente(fechaSuceso, hora, matPropia, matAjena, descripcion, descripcion)) {
+        if (p.nuevaIncidenciaUrgente(fechaSuceso, hora, matPropia, matAjena, descripcion, maxDias)) {
             System.out.println(ProjectStrings.ALTA_INCIDENCIA_OK);
         } else {
             System.out.println(ProjectStrings.ALTA_INCIDENCIA_ERROR);
@@ -479,7 +481,7 @@ public class MainLauncher {
         //Mostrar submenú
         System.out.println("SubMenú Proyecto Oficina-Seguros");
         System.out.println("-------------------------------------------------\n");
-        System.out.println("ELIMINAR INCIDENCIA\n");
+        System.out.println("CERRAR INCIDENCIA\n");
         //Recoger datos Paciente
         String codigo;
 
@@ -549,14 +551,19 @@ public class MainLauncher {
     }
 
     private static void mostrarIncidencias(Incidencia[] lista) {
-        System.out.println("Lista de incidencias:");
-        for (Incidencia t : lista) {
-            System.out.println(t.toString());
+        try {
+            System.out.println("Lista de incidencias:");
+            Arrays.sort(lista); // Ordenar el arreglo utilizando compareTo()
+            for (Incidencia i : lista) {
+                System.out.println(i.toString());
+            }
+        } catch (NullPointerException npe) {
+            System.out.println("No se encontraron incidencias.");
         }
     }
 
     private static void saveOficina() {
-        if (ControladorFichero.writeText("oficina.csv", miOficina.toCSV())) {
+        if (ControladorFichero.writeText("Oficina.csv", miOficina.toCSV())) {
             System.out.println("Proceso de volcado a disco exitoso");
         } else {
             System.out.println("Error al escribir en disco. ¿Tiene espacio en el disco?");
@@ -577,7 +584,7 @@ public class MainLauncher {
         System.out.println("¿Está seguro?(S para Sí; Otra letra para No) ");
         String respuesta = leerStringTeclado(sc);
         if (respuesta.equals("S")) {
-            miOficina = new Oficina(ControladorFichero.readText("oficina.csv"));
+            miOficina = new Oficina(ControladorFichero.readText("Oficina.csv"));
         }
     }
 }

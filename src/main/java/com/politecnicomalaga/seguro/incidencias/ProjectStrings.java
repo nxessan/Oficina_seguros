@@ -15,7 +15,7 @@ public class ProjectStrings {
     public static final String ALTACLIENTE_ERROR = "Error al dar de alta cliente: ¿existe ya?";
     public static final String ALTA_INCIDENCIA_OK = "Nueva incidencia asignada correctamente";
     public static final String ALTA_INCIDENCIA_ERROR = "Error al crear la incidencia: código existente";
-    public static final String ELIMINA_INCIDENCIA_OK = "Nueva incidencia eliminada correctamente";
+    public static final String ELIMINA_INCIDENCIA_OK = "Incidencia cerrada correctamente";
     public static final String ELIMINA_INCIDENCIA_ERROR = "Error al eliminar la incidencia: ¿código existe?";
     public static final String CIERRA_TRATAMIENTO_OK = "La incidencia se considera cerrada";
     public static final String CIERRA_INCIDENCIA_ERROR = "Error: la incidencia estaba ya cerrada o no se encontró el código";

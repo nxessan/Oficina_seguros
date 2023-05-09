@@ -42,50 +42,45 @@ public class Cliente {
     //Constructor para pasar de csv a string 
     public Cliente(String sCSV) {
         String[] lineas = sCSV.split("\n");
-        //Me vendrá una línea mínimo para paciente
-        String[] columnas = lineas[0].split(";");
-        if (columnas[0].equals("Cliente")) {
-            this.dni = columnas[1];
-            this.codPoliza = columnas[2];
-            this.nombre = columnas[3];
-            this.apellidos = columnas[4];
-            this.direccion = columnas[5];
-            this.email = columnas[6];
-            this.telefono = columnas[7];
+        //Me vendrá una línea mínimo para cliente
+        String[] columnasCliente = lineas[0].split(";");
+        if (columnasCliente[0].equals("Cliente")) {
+            this.dni = columnasCliente[1];
+            this.codPoliza = columnasCliente[2];
+            this.nombre = columnasCliente[3];
+            this.apellidos = columnasCliente[4];
+            this.direccion = columnasCliente[5];
+            this.email = columnasCliente[6];
+            this.telefono = columnasCliente[7];
         } else {
             return;
         }
 
-        //De 0 a n incidencias..
+        //Después de 0 a n Incidencias
         misIncidencias = new ArrayList<>();
 
-        //Si las líneas son más de 1... Hay incidencias
+        //Si las líneas son más de 1... Hay Incidencias
         for (int i = 1; i < lineas.length; i++) {
-         //   String[] columnasIncidencia = sCSV.split(";");
-
-            //Saber si es incidencia urgente lo sabré si el ultimo atributo tiene 1 o 2 numeros representando los dias
-            if (columnas[0].equals("Incidencia")) {
-                if (columnas.length > 8 && columnas[8].length() > 0 && columnas[8].length() <= 2) {
-                    //trabajo la incidencia urgente
+            
+            String[] columnasIncidencia = lineas[i].split(";");
+            
+            if (columnasIncidencia[0].equals("Incidencia")) {
+                
+                if (columnasIncidencia.length > 8 && columnasIncidencia[8].length() >= 1 && columnasIncidencia[8].length() <= 2) {
                     Incidencia in = new Incidencia_urgente(lineas[i]);
-                    this.misIncidencias.add(in);
-                    //Saber si es incidencia ajena lo sabré si el ultimo atributo tiene entre 8 o 9 numeros representando el dni con letra o sin letra
-                } else if (columnas.length > 8 && columnas[8].length() >= 8 && columnas[8].length() <= 9) {
-                    //trabajo la incidencia urgente
+                    misIncidencias.add(in);
+                } else if (columnasIncidencia.length > 8 && columnasIncidencia[8].length() > 2) {
                     Incidencia in = new Incidencia_ajena(lineas[i]);
-                    this.misIncidencias.add(in);
-
+                    misIncidencias.add(in);
                 } else {
-                    //trabajo la incidencia normal
                     Incidencia in = new Incidencia(lineas[i]);
-                    //lo pongo en la lista
-                    this.misIncidencias.add(in);
+                    misIncidencias.add(in);
                 }
             }
         }
     }
+    
     //número de póliza del cliente, un guión y un id autonumérico generado por la aplicación    
-
     public String generarCodIncidencia() {
         String cadena = codPoliza + "-" + numIncidencias;
         numIncidencias++;
@@ -117,7 +112,7 @@ public class Cliente {
             return false;
         } else {
             String codIncidencias = generarCodIncidencia();
-            misIncidencias.add(new Incidencia(fechaSuceso, hora, matPropia, matAjena, descripcion, codIncidencias));
+            misIncidencias.add(new Incidencia_ajena(fechaSuceso, hora, matPropia, matAjena, descripcion, codIncidencias, dniAjeno));
             return true;
         }
     }
@@ -132,7 +127,7 @@ public class Cliente {
             return false;
         } else {
             String codIncidencias = generarCodIncidencia();
-            misIncidencias.add(new Incidencia(fechaSuceso, hora, matPropia, matAjena, descripcion, codIncidencias));
+            misIncidencias.add(new Incidencia_urgente(fechaSuceso, hora, matPropia, matAjena, descripcion, codIncidencias, diasMax));
             return true;
         }
     }
@@ -182,6 +177,17 @@ public class Cliente {
 
     public List<Incidencia> listarIncidencias() {
         return misIncidencias;
+    }
+
+    public Incidencia_urgente[] listarIncidenciasUrgentes() {
+        ArrayList<Incidencia_urgente> resultado = new ArrayList<>();
+        for (Incidencia i : misIncidencias) {
+            if (i instanceof Incidencia_urgente) {
+                Incidencia_urgente[] listaI = new Incidencia_urgente[resultado.size()];
+                return resultado.toArray(listaI);
+            }
+        }
+        return null;
     }
 
     public boolean compara(String campo, AtributosCliente at) {

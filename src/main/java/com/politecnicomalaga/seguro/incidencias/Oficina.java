@@ -28,13 +28,32 @@ public class Oficina {
         this.email = email;
     }
 
-    public Oficina(String sCsv) {
-        this.codOfi = codOfi;
-        this.nombre = nombre;
-        this.direccion = direccion;
-        this.telefono = telefono;
-        this.email = email;
-    }
+    public Oficina(String sCSV) {
+		String[] lineas = sCSV.split("\n");
+		//Me vendrá una línea mínimo para clinica
+		String[] columnas = lineas[0].split(";");
+		if (columnas[0].equals("Oficina")) {
+			this.codOfi = columnas[1];
+			this.nombre = columnas[2];
+			this.direccion = columnas[3];
+                        this.telefono = columnas[4];
+                        this.email = columnas[5];
+		} else {
+			return;
+		}
+		
+		//Después de 0 a n tratamientos
+		this.misClientes = new ArrayList<>();
+		
+		String[] clientesPosibles = sCSV.split("Cliente");
+		String miClienteCSV;
+		
+		for (int i=1;i<clientesPosibles.length;i++) {
+			miClienteCSV = "Cliente" + clientesPosibles[i];
+			Cliente c = new Cliente(miClienteCSV);
+			misClientes.add(c);
+		}
+	}
 
     public Cliente mostrarClientePorDNI(String dni) {
         int i = 0;
